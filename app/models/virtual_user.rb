@@ -1,4 +1,4 @@
-require 'digest/md5'
+require 'digest/sha2'
 require 'folder'
 
 class VirtualUser < ActiveRecord::Base
@@ -26,7 +26,8 @@ class VirtualUser < ActiveRecord::Base
   end
   
   def hash_password
-    self.password = Digest::MD5.hexdigest(self.password)
+    salt = rand(36**8).to_s(36)
+    self.password = self.password.crypt("$6$" + salt)
   end
     
   def get_folder(user = name)
